@@ -14,6 +14,13 @@ create table inverted_index(
 );
 
 
+-- trp cache for performance 
+
+create table trp_cache(
+    query   varchar(200),
+    trp_url  varchar(200) references documents(url)    
+);
+
 -- drop tuples from the inverted_index if freuency is 0
 
 create or replace function zero_frequency_handler() returns trigger as
@@ -41,3 +48,4 @@ create or replace trigger special_char_handler
 after update or insert on documents
 for each row
 execute procedure special_char_handler();
+
