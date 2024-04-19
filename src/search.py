@@ -1,6 +1,7 @@
 import time
 from math import log
-from index_content import normalize_string
+from src.index_content import normalize_string
+# from index_content import normalize_string
 import psycopg2 # type: ignore
 
 
@@ -32,6 +33,12 @@ class SearchEngine:
     def size(self) -> int:
         self.cursor.execute("select count(*) from documents;")
         return self.cursor.fetchone()[0]
+    
+
+    @property
+    def posts(self) -> list[str]:
+        self.cursor.execute("select distinct url from documents;")
+        return [t[0] for t in self.cursor.fetchall()]
 
 
     @property
@@ -65,7 +72,7 @@ class SearchEngine:
         return result
     
 
-    def search(self, query: str) -> list[str]:
+    def search(self, query: str) -> dict[str, float]:
         keywords = normalize_string(query).split(" ")
         url_scores: dict[str, float] = {}
 
@@ -73,8 +80,8 @@ class SearchEngine:
             kw_urls_score = self.bm25(kw)
             url_scores = update_url_scores(url_scores, kw_urls_score)
 
-        ranked_urls = sorted(url_scores, key=lambda x: url_scores[x], reverse=True)
-        return ranked_urls
+        # ranked_urls = sorted(url_scores, key=lambda x: url_scores[x], reverse=True)
+        return url_scores
     
     
     def get_urls(self, keyword: str) -> dict[str, int]:
@@ -96,9 +103,10 @@ if __name__ == "__main__":
         start = time.time()
         
         engine = SearchEngine()
+        print(engine.posts)
         results = engine.search(string)
 
         print(len(results), "results, ", round(time.time() - start, 2), "seconds\n")
-        for result in results[:10]:
-            print("-", result)
+        # for result in results[:10]:
+        #     print("-", result)
     
