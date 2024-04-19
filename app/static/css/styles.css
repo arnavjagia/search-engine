@@ -143,3 +143,22 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
+form > input {
+    height: 1.8em;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    border-color: #b61c1c;
+    outline: #b61c1c;
+}
+
+form > * {
+    font-size: 1em;
+}
